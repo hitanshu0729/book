@@ -9,9 +9,18 @@ export default function PhotosUploader({ addedPhotos, setAddedPhotos }) {
     ev.preventDefault();
     console.log(addedPhotos);
     try {
-      const { data: filename } = await axios.post("/upload-by-link", {
-        link: photoLink,
-      });
+      const { data: filename } = await axios.post(
+        "/upload-by-link",
+        {
+          link: photoLink,
+        },
+        {
+          withCredentials: true, // Include credentials (cookies)
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setAddedPhotos((prevPhotos) => [...prevPhotos, filename]);
       // console.log(addedPhotos);
       setPhotoLink("");
@@ -31,9 +40,19 @@ export default function PhotosUploader({ addedPhotos, setAddedPhotos }) {
     // Make the POST request to upload files
     console.log("requested");
     axios
-      .post("/upload", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .post(
+        "/upload",
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+        {
+          withCredentials: true, // Include credentials (cookies)
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((response) => {
         console.log(response);
         // Destructure the response to get the data array
@@ -84,10 +103,7 @@ export default function PhotosUploader({ addedPhotos, setAddedPhotos }) {
               className="h-50 flex flex-col  cursor-pointer"
               key={link}
             >
-              <img
-                className="rounded-2xl w-40 h-40"
-                src={link}
-              />
+              <img className="rounded-2xl w-40 h-40" src={link} />
               <div className="flex justify-between">
                 <button
                   onClick={(ev) => removePhoto(ev, link)}

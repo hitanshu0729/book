@@ -6,7 +6,12 @@ const Home = () => {
   const [places, setPlaces] = useState([]);
   let o = 0;
   useEffect(() => {
-    axios.get("/places").then((response) => {
+    axios.get("/places", {
+      withCredentials: true, // Include credentials (cookies)
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
       setPlaces(response.data);
     });
   }, []);

@@ -8,11 +8,20 @@ const Register = () => {
   async function registerUser(ev) {
     ev.preventDefault();
     try {
-      await axios.post("/register", {
-        name,
-        email,
-        password,
-      });
+      await axios.post(
+        "/register",
+        {
+          name,
+          email,
+          password,
+        },
+        {
+          withCredentials: true, // Include credentials (cookies)
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       alert("Registration successful. Now you can log in");
     } catch (e) {
       console.log(e);

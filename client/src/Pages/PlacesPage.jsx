@@ -8,10 +8,17 @@ import Item from "../../Item";
 const PlacesPage = () => {
   const [place, setPlace] = useState(null);
   useEffect(() => {
-    axios.get(`/userplaces`).then((response) => {
-      //   console.log(response.data);
-      setPlace(response.data);
-    });
+    axios
+      .get(`/userplaces`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        //   console.log(response.data);
+        setPlace(response.data);
+      });
   }, []);
 
   if (!place) return "";

@@ -13,7 +13,12 @@ export default function PlacePage() {
     if (!id) {
       return;
     }
-    axios.get(`/places/${id}`).then((response) => {
+    axios.get(`/places/${id}`, {
+      withCredentials: true, // Include credentials (cookies)
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
       setPlace(response.data);
     });
   }, [id]);

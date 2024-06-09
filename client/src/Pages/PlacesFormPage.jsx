@@ -34,10 +34,19 @@ const PlacesFormPage = () => {
       price,
     };
     if (id) {
-      const {data}=await axios.put("/places", {
-        id,
-        ...pdata,
-      });
+      const { data } = await axios.put(
+        "/places",
+        {
+          id,
+          ...pdata,
+        },
+        {
+          withCredentials: true, // Include credentials (cookies)
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(data);
     } else {
       const { data } = await axios.post("/places", pdata);
@@ -50,7 +59,12 @@ const PlacesFormPage = () => {
 
     async function fetchPlace() {
       try {
-        const { data } = await axios.get(`/places/${id}`);
+        const { data } = await axios.get(`/places/${id}`, {
+          withCredentials: true, // Include credentials (cookies)
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         console.log(data);
         setTitle(data.title || "");
         setAddress(data.address || "");

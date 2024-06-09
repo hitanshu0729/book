@@ -13,7 +13,12 @@ const Account = () => {
   if (!subpage) subpage = "profile";
   async function logout() {
     console.log("d");
-    await axios.post("/logout");
+    await axios.post("/logout", {
+      withCredentials: true, // Include credentials (cookies)
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     setRedirect("/");
     setUser(null);
   }
