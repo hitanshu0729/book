@@ -77,7 +77,7 @@ app.post("/register", async (req, res) => {
       password: bcrypt.hashSync(password, bcryptSalt),
     });
     res.json(userDoc);
-    console.log(userDoc);
+    // console.log(userDoc);
   } catch (e) {
     res.status(422).json(e);
   }
@@ -143,7 +143,6 @@ app.post("/places", (req, res) => {
   });
 });
 app.get("/profile", (req, res) => {
-  console.log(req);
   const { token } = req.cookies;
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
@@ -158,9 +157,9 @@ app.get("/profile", (req, res) => {
 app.post("/upload-by-link", async (req, res) => {
   try {
     const { link } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const fileurl = await cloudinary.uploader.upload(link);
-    console.log(fileurl.secure_url);
+    // console.log(fileurl.secure_url);
     res.json(fileurl.secure_url);
   } catch (e) {
     res.status(422).json({ error: e.message });
@@ -184,7 +183,7 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET,
 });
 uploadFile = async (filePath) => {
-  console.log(filePath);
+  // console.log(filePath);
   console.log("Hitanshu");
   try {
     const result = await cloudinary.uploader.upload(filePath);
@@ -195,7 +194,7 @@ uploadFile = async (filePath) => {
   }
 };
 const uploadFun = async (req, res) => {
-  console.log(req.files);
+  // console.log(req.files);
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No files were uploaded." });
@@ -203,7 +202,7 @@ const uploadFun = async (req, res) => {
 
     const uploadPromises = req.files.map((file) => {
       // Pass the file buffer and original name to the upload function
-      console.log(file.path);
+      // console.log(file.path);
       return uploadFile(file.path);
     });
     const uploadResults = await Promise.all(uploadPromises);
