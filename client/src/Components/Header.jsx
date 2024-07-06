@@ -9,12 +9,14 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const { user } = useContext(UserContext);
   return (
-    <header className="py-[1rem] flex items-center justify-evenly w-[100%] box-border">
+    <header className="py-[1rem] flex items-center justify-evenly w-[100%] box-border bg-white">
       <div className="cursor-pointer flex items-center bnb p-1">
         <div className="bg-red-500 text-white text-[1.3rem] m-1">
           <PiPaperPlaneFill />
         </div>
-        <Link to={'/'} className="bold">Flyfy</Link>
+        <Link to={"/"} className="bold">
+          Flyfy
+        </Link>
       </div>
 
       <div className="flex items-center search border-[2px] border-grey-400 rounded-full gap-2 shadow-md shadow-grey-500 p-1 box-border text-center">

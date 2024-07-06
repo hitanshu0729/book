@@ -43,19 +43,7 @@ const cookieParser = require("cookie-parser");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const User = require("./Models/User.js");
 app.use(cookieParser());
-function getUserDataFromReq(req) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(
-      req.cookies.token,
-      process.env.JWT_SECRET,
-      {},
-      async (err, userData) => {
-        if (err) throw err;
-        resolve(userData);
-      }
-    );
-  });
-}
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -77,36 +65,8 @@ app.post("/register", async (req, res) => {
       password: bcrypt.hashSync(password, bcryptSalt),
     });
     res.json(userDoc);
-    // console.log(userDoc);
   } catch (e) {
     res.status(422).json(e);
-  }
-});
-const Upload = require("./Helpers/Upload.js");
-app.post("/login", async (req, res) => {
-  mongoose.connect(process.env.MONGO_URI);
-  const { email, password } = req.body;
-  const userDoc = await User.findOne({ email });
-  if (userDoc) {
-    const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      jwt.sign(
-        {
-          email: userDoc.email,
-          id: userDoc._id,
-        },
-        process.env.JWT_SECRET,
-        {},
-        (err, token) => {
-          if (err) throw err;
-          res.cookie("token", token).json(userDoc);
-        }
-      );
-    } else {
-      res.status(422).json("pass not ok");
-    }
-  } else {
-    res.status(403).json("not found");
   }
 });
 app.post("/places", (req, res) => {
@@ -142,18 +102,7 @@ app.post("/places", (req, res) => {
     res.json(placeDoc);
   });
 });
-app.get("/profile", (req, res) => {
-  const { token } = req.cookies;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
-      if (err) throw err;
-      const { name, email, _id } = await User.findById(userData.id);
-      res.json({ name, email, _id });
-    });
-  } else {
-    res.json(null);
-  }
-});
+
 app.post("/upload-by-link", async (req, res) => {
   try {
     const { link } = req.body;
@@ -164,6 +113,58 @@ app.post("/upload-by-link", async (req, res) => {
   } catch (e) {
     res.status(422).json({ error: e.message });
     // res.status(422).json({ error: e.message });
+  }
+});
+const Upload = require("./Helpers/Upload.js");
+app.post("/login", async (req, res) => {
+  mongoose.connect(process.env.MONGO_URI);
+  const { email, password } = req.body;
+  const userDoc = await User.findOne({ email });
+  if (userDoc) {
+    const passOk = bcrypt.compareSync(password, userDoc.password);
+    if (passOk) {
+      jwt.sign(
+        {
+          email: userDoc.email,
+          id: userDoc._id,
+        },
+        process.env.JWT_SECRET,
+        {},
+        (err, token) => {
+          if (err) throw err;
+          res.cookie("token", token).json(userDoc);
+        }
+      );
+    } else {
+      res.status(422).json("pass not ok");
+    }
+  } else {
+    res.status(403).json("not found");
+  }
+});
+function getUserDataFromReq(req) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      req.cookies.token,
+      process.env.JWT_SECRET,
+      {},
+      async (err, userData) => {
+        if (err) throw err;
+        resolve(userData);
+      }
+    );
+  });
+}
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
+      if (err) throw err;
+      const { name, email, _id } = await User.findById(userData.id);
+      res.json({ name, email, _id });
+    });
+  } else {
+    res.json(null);
   }
 });
 app.post("/logout", (req, res) => {
